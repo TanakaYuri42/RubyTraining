@@ -1,32 +1,19 @@
 class Numgame
 
   def start
-    @ans = gets.chomp  #ユーザーが入力した数字
-    @ans_arr = []  #ユーザーが入力した数字を入れる配列
-    
-    4.times do |n|
-      @ans_arr << @ans.slice(n).to_i  #ユーザーが入力した数字を配列に入れる
-    end
-    
+    ans = gets.chomp  #ユーザーが入力した数字
+    @ans_arr = ans.split("").map(&:to_i)
   end  #def startここまで
   
   
   def kazuate
+    start
     
     hit = 0  #hit数
     count = 0  #ユーザーが数字を入力した数
-    num_arr = []  #1から10の配列
-    cor_arr = []  #正解の数字を入れた配列
     
-    10.times do |n|
-      num_arr << n  #1から10をnum_arrに入れる
-    end
-    
-    4.times do
-      cor = num_arr.sample  #num_arrの数字をランダムに取り出す
-      num_arr.delete(cor)  #重複を避けるため、取り出した数字は配列から消す
-      cor_arr << cor  #取り出した数字を、正解の配列に入れる
-    end
+    num_arr = (0..9).to_a  #0から9の配列を生成
+    cor_arr = num_arr.shuffle.take(4)  #順番シャッフルしたnum_arrから4つ数字を取り出す
     
     while hit != 4  #hitが4になるまでゲームは続く
     
@@ -35,18 +22,15 @@ class Numgame
       hit_str = ""  #hitした数を教える文字列
       blow_str = ""  #blowした数を教える文字列
       count += 1  #何回目の回答かカウントする
-    
+      
       @ans_arr.each do |n|
-        cor_arr.each do |i|
-          blow += 1 if n == i  #配列の数を比べて、数字が合っていればblowにプラスする
+        if n == cor_arr[@ans_arr.find_index(n)]
+          hit += 1  #位置も値も完全一致していればhitに+1
+          next
         end
+        blow += 1 if cor_arr.include?(n)  #入力した数値が含んでいればblowに+1
       end
-    
-      @ans_arr.length.times do |n|
-        hit += 1 if @ans_arr[n] == cor_arr[n]  #数字と順番が完全一致すればhitにプラスする
-      end
-    
-      blow -= hit  #blowとhitの重複分をマイナスする
+
       hit_str = "#{hit} Hit " if hit > 0  #もしhitがあれば、文字列を生成
       blow_str = "#{blow} Blow" if blow > 0  #もしblowがあれば、文字列を生成
     
@@ -66,5 +50,4 @@ end  #class Numgameここまで
 
 p "4桁の数あてゲームを行います。数字を4つ記入してください"
 cla = Numgame.new
-cla.start
 cla.kazuate
