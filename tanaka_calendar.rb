@@ -3,37 +3,36 @@ class Calendar
   def inputym
     p "カレンダーを表示させたい年月をご記入ください"
     p "例：2018年6月 → 201806"
-    ym = gets.chomp
-    @year = ym.slice(0,4).to_i
-    @month = ym.slice(4,2).to_i
+    yyyymm = gets.chomp.to_i
+    @yyyy = yyyymm / 100
+    @mm = yyyymm % 100
   end  #class inputここまで
   
   
   def create_calender
+    inputym
     
-    m = @month.to_i  #入力された月
+    m = @mm  #入力された月
     mon_arr = ["January","February","	March","April","May","June",
               "July","August","September","October","November","December"]
     mon_name = mon_arr[m-1]
-    year = @year
+    mon31_arr = [1,3,5,7,8,10,12]
+    mon30_arr = [4,6,9,11]
+    
+    year = @yyyy
     day_num = 0
     
     #うるう年の判定
-    if @year % 400 == 0
+    #uruu=1ではなく、true/falseで返す
+    if @yyyy % 400 == 0 || @yyyy % 100 != 0 && @yyyy % 4 == 0
       uruu = 1
-    elsif @year % 100 == 0
-      uruu = 0
-    elsif @year % 4 == 0
-      uruu = 1
-    else
-      uruu = 0
     end
     
     #dayの数割り振り
-    if m == 1 || m == 3 || m == 5 || m == 7 || m == 8 || m == 10 || m == 12
-      day_num = 31
-    elsif m == 4 || m == 6 || m == 9 || m == 11
+    if mon30_arr.include?(m)
       day_num = 30
+    elsif mon31_arr.include?(m)
+      day_num = 31
     elsif uruu == 1
       day_num = 29
     else
@@ -43,21 +42,19 @@ class Calendar
     #ツェラーの公式を使う
     if m == 1
       m = 13
-      @year -= 1
+      @yyyy -= 1
     elsif m == 2
       m = 14
-      @year -= 1
+      @yyyy -= 1
     end
     
-    @year = @year.to_s
-    h = @year.slice(0,2).to_i
-    y = @year.slice(2,2).to_i
+    h = @yyyy / 100
+    y = @yyyy % 100
     
     x1 = y / 4
     x2 = h / 4
     x3 = 13 * (m + 1) / 5
-    
-    w = y + x1.floor + x2.floor - (2 * h) + x3.floor + 1
+    w = y + x1 + x2 - (2 * h) + x3 + 1
     w = (w + 6) % 7
     
     #出力する日付や空白を配列に入れる
@@ -70,6 +67,8 @@ class Calendar
     day_num.times do |n|
       day_arr << n + 1
     end
+    
+    #day_arr << (1..day_num).to_a
     
     i = 1
     
@@ -99,5 +98,4 @@ end  #class Calendarここまで
 
 
 cla = Calendar.new
-cla.inputym
 cla.create_calender
