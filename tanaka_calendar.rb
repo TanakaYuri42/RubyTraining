@@ -9,6 +9,11 @@ class Calendar
   end  #class input‚±‚±‚Ü‚Å
   
   
+  def uruu?
+    @yyyy % 400 == 0 || @yyyy % 100 != 0 && @yyyy % 4 == 0
+  end
+  
+  
   def create_calender
     inputym
     
@@ -22,18 +27,12 @@ class Calendar
     year = @yyyy
     day_num = 0
     
-    #‚¤‚é‚¤”N‚Ì”»’è
-    #uruu=1‚Å‚Í‚È‚­Atrue/false‚Å•Ô‚·
-    if @yyyy % 400 == 0 || @yyyy % 100 != 0 && @yyyy % 4 == 0
-      uruu = 1
-    end
-    
     #day‚Ì”Š„‚èU‚è
     if mon30_arr.include?(m)
       day_num = 30
     elsif mon31_arr.include?(m)
       day_num = 31
-    elsif uruu == 1
+    elsif uruu?
       day_num = 29
     else
       day_num = 28
